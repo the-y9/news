@@ -4,3 +4,5 @@ theme:
 plugins:
   - search
   - awesome-pages
+  - redirects:
+      redirect_maps: !!include mkdocs_redirects.yml

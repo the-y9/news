@@ -1,0 +1,41 @@
+name: Deploy MkDocs site
+
+on:
+  push:
+    branches:
+      - main   # or your default branch
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install mkdocs mkdocs-awesome-pages-plugin mkdocs-redirects
+
+      - name: Update homepage to latest news
+        run: |
+          LATEST_FILE=$(find docs/2026 -type f -name "*.md" | sort | tail -n 1)
+          echo "Redirecting index.md to $LATEST_FILE"
+          echo "redirects:" > mkdocs_redirects.yml
+          echo "  index.md: ${LATEST_FILE#docs/}" >> mkdocs_redirects.yml
+
+      - name: Build and deploy MkDocs
+        uses: peaceiris/actions-gh-pages@v6
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./site
+          publish_branch: gh-pages
+          build_dir: ./site
+          build_command: |
+            mkdocs build --config-file mkdocs.yml
