@@ -31,7 +31,7 @@ jobs:
           echo "  index.md: ${LATEST_FILE#docs/}" >> mkdocs_redirects.yml
 
       - name: Build and deploy MkDocs
-        uses: peaceiris/actions-gh-pages@v6
+        uses: peaceiris/actions-gh-pages@v5
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./site
