@@ -49,7 +49,7 @@ Your task:
 5. Do NOT hallucinate. Only include what is present in the transcript.
 6. Output as .md and follow only:
 
-Date: {today.strftime("%d_%b_%Y")}
+#Date: {today.strftime("%d-%b-%Y")}
 ## <Topic Name>
 #### Headline: <headline text>
   - Key Point 1

@@ -5,7 +5,11 @@ description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.11"
 dependencies = [
+    "git-filter-repo>=2.47.0",
     "google-genai>=1.61.0",
+    "mkdocs>=1.6.1",
+    "mkdocs-awesome-pages-plugin>=2.10.1",
+    "mkdocs-material>=9.7.1",
     "python-dotenv>=1.2.1",
     "youtube-transcript-api>=1.2.4",
 ]
