@@ -4,7 +4,7 @@ from fetch_transcript import get_youtube_transcript
 from datetime import date
 
 today = date.today()
-DIR = f"{today.strftime('%Y')}/{today.strftime('%b_%Y')}"
+DIR = f"docs/{today.strftime('%Y')}/{today.strftime('%b_%Y')}"
 os.makedirs(DIR, exist_ok=True)
 FILE = f"{DIR}/{today.strftime('%d_%b_%Y')}.md"
 
