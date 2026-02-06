@@ -1,8 +1,23 @@
 site_name: News
+site_url: https://the-y9.github.io/news/
 theme:
   name: material
 plugins:
   - search
   - awesome-pages
   - redirects:
-      redirect_maps: !!include mkdocs_redirects.yml
+      redirect_maps:
+        index.md: 2026/Feb_2026/06_Feb_2026.md  # replace with latest date file
+
+# Navigation handled automatically by awesome-pages
+nav: []
+
+# Optional: extra config
+markdown_extensions:
+  - toc:
+      permalink: true
+  - tables
+  - footnotes
+
+# Optional: set docs directory if not default
+docs_dir: docs

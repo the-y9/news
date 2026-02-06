@@ -1,13 +1,15 @@
-name: Deploy MkDocs site
+name: Deploy News Site
 
 on:
   push:
     branches:
-      - master   # or your default branch
+      - master
 
 jobs:
-  build-and-deploy:
+  deploy:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write  # allows pushing to gh-pages
 
     steps:
       - name: Checkout repository
@@ -16,7 +18,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: "3.11"
+          python-version: 3.11
 
       - name: Install dependencies
         run: |
@@ -25,17 +27,18 @@ jobs:
 
       - name: Update homepage to latest news
         run: |
-          LATEST_FILE=$(find docs/2026 -type f -name "*.md" | sort | tail -n 1)
-          echo "Redirecting index.md to $LATEST_FILE"
-          echo "redirects:" > mkdocs_redirects.yml
-          echo "  index.md: ${LATEST_FILE#docs/}" >> mkdocs_redirects.yml
+          # Find the latest news Markdown file
+          LATEST=$(find docs/2026 -type f -name "*.md" | sort | tail -n1)
+          LATEST_REL=${LATEST#docs/}
+          echo "Updating mkdocs.yml to redirect index.md → $LATEST_REL"
+          # Replace the redirect in mkdocs.yml
+          sed -i "s|index.md:.*|index.md: $LATEST_REL|" mkdocs.yml
 
-      - name: Build and deploy MkDocs
+      - name: Build MkDocs site
+        run: mkdocs build
+
+      - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./site
-          publish_branch: gh-pages
-          build_dir: ./site
-          build_command: |
-            mkdocs build --config-file mkdocs.yml
