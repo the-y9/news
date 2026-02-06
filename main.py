@@ -4,7 +4,7 @@ from fetch_transcript import get_youtube_transcript
 from datetime import date
 
 today = date.today()
-DIR = f"docs/{today.strftime('%Y')}/{today.strftime('%b_%Y')}"
+DIR = f"dev/{today.strftime('%Y')}/{today.strftime('%b_%Y')}"
 os.makedirs(DIR, exist_ok=True)
 FILE = f"{DIR}/{today.strftime('%d_%b_%Y')}.md"
 
@@ -31,6 +31,7 @@ if __name__ == "__main__":
     except Exception as e:
         with open(f"{FILE.split('.')[0]}.txt", "w", encoding="utf-8") as f:
             f.write(transcript_text)
-        print(f"✅ saved to {FILE.split('.')[0]}.txt")
+        print("ERROR: ", str(e))
+        print(f"\n✅ Transcript saved to {FILE.split('.')[0]}.txt")
 
     

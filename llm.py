@@ -9,7 +9,8 @@ load_dotenv()
 
 # ---------- CONFIG ----------
 MAX_CHUNK_SIZE = 4000  # Approx chars/tokens per chunk
-MODEL_NAME = "gemini-2.5-flash-lite"
+# MODEL_NAME = "gemini-2.5-flash-lite"
+MODEL_NAME = "gemini-3-flash-preview"
 
 client = genai.Client(api_key=os.getenv("GEMINI_API_KEY"))
 
@@ -44,10 +45,13 @@ You are an expert UPSC content analyst. I will provide you with a part of a tran
 Your task:
 1. Translate fully into English if needed.
 2. Detect news headlines from this transcript.
-3. Organize information into UPSC Syllabus: Polity, Economy, Environment, Science & Tech, International Relations, ... , Other.
-4. For each topic, list key points accurately, concise, compact, and exam-relevant.
+3. Organize information into UPSC Syllabus: History, Geography, Polity, Economy, Environment, Science & Tech, Defense, International Relations, ... , Other.
+4. For each topic
+    - list key points accurately, concise, compact, and exam-relevant.
+    - **Bold** important keywords, terms, policy/program names, but dont clutter with it.
 5. Do NOT hallucinate. Only include what is present in the transcript.
 6. Output as .md and follow only:
+
 
 #Date: {today.strftime("%d-%b-%Y")}
 ## <Topic Name>
@@ -89,19 +93,22 @@ def summarize_transcript(transcript_text: str) -> dict:
     return merged
 
 # ---------- USAGE ----------
-DIR = f"{today.strftime('%Y')}/{today.strftime('%b_%Y')}"
+DIR = f"dev/{today.strftime('%Y')}/{today.strftime('%b_%Y')}"
 os.makedirs(DIR, exist_ok=True)
 FILE = f"{DIR}/{today.strftime('%d_%b_%Y')}.md"
 if __name__ == "__main__":
     # Load transcript
-    with open(f"transcript.txt", "r", encoding="utf-8") as f:
+    with open(r"dev\2026\Feb_2026\06_Feb_2026.txt", "r", encoding="utf-8") as f:
         transcript_text = f.read()
 
-    print("Starting topic-wise summarization using Gemini Free Tier...")
-    topic_summary = summarize_transcript(transcript_text)
+    print("Starting LLM...")
+    try:
+        topic_summary = summarize_transcript(transcript_text)    
+        # Save final md
+        with open(FILE, "w", encoding="utf-8") as f:
+            f.write(topic_summary)
 
-    # Save final md
-    with open(FILE, "w", encoding="utf-8") as f:
-        f.write(topic_summary)
-
-    print("✅ Topic-wise key points with headlines saved to topic_summary.json")
+        print(".\n.\n.\n✅ output -> ", FILE)
+    except Exception as e:
+        print("ERROR: ", str(e))
+        
