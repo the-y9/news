@@ -4,7 +4,6 @@ import time
 from google import genai
 from dotenv import load_dotenv
 from datetime import date
-today = date.today()
 load_dotenv()
 
 # ---------- CONFIG ----------
@@ -35,7 +34,7 @@ def split_into_chunks(text: str, max_size: int = MAX_CHUNK_SIZE) -> List[str]:
     return chunks
 
 
-def create_prompt(chunk: str) -> str:
+def create_prompt(chunk: str, ndate: date) -> str:
     """
     Prepare prompt for UPSC key points with headlines
     """
@@ -53,7 +52,7 @@ Your task:
 6. Output as .md and follow only:
 
 
-#Date: {today.strftime("%d-%b-%Y")}
+#Date: {ndate.strftime("%d-%b-%Y")}
 ## <Topic Name>
 #### Headline: <headline text>
   - Key Point 1
@@ -78,13 +77,13 @@ def process_chunk_with_gemini(prompt: str) -> dict:
 
 # ---------- MAIN PIPELINE ----------
 
-def summarize_transcript(transcript_text: str) -> dict:
+def summarize_transcript(transcript_text: str, ndate:date) -> dict:
     chunks = split_into_chunks(transcript_text)
     results = []
 
     for i, chunk in enumerate(chunks, 1):
         print(f"Processing chunk {i}/{len(chunks)}...")
-        prompt = create_prompt(chunk)
+        prompt = create_prompt(chunk, ndate)
         chunk_result = process_chunk_with_gemini(prompt)
         results.append(chunk_result)
         time.sleep(1)  # avoid rate limits
@@ -93,17 +92,20 @@ def summarize_transcript(transcript_text: str) -> dict:
     return merged
 
 # ---------- USAGE ----------
-DIR = f"dev/{today.strftime('%Y')}/{today.strftime('%b_%Y')}"
-os.makedirs(DIR, exist_ok=True)
-FILE = f"{DIR}/{today.strftime('%d_%b_%Y')}.md"
+
 if __name__ == "__main__":
+    ndate=date.today()
+    DIR = f"dev/{ndate.strftime('%Y')}/{ndate.strftime('%b_%Y')}"
+    os.makedirs(DIR, exist_ok=True)
+    FILE = f"{DIR}/{ndate.strftime('%d_%b_%Y')}.md"
+    
     # Load transcript
     with open(r"dev\2026\Feb_2026\06_Feb_2026.txt", "r", encoding="utf-8") as f:
         transcript_text = f.read()
 
     print("Starting LLM...")
     try:
-        topic_summary = summarize_transcript(transcript_text)    
+        topic_summary = summarize_transcript(transcript_text, ndate)    
         # Save final md
         with open(FILE, "w", encoding="utf-8") as f:
             f.write(topic_summary)

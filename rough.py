@@ -1,8 +1,14 @@
-from datetime import date
-today = date.today()
+from urllib.parse import urlparse, parse_qs
 
-# Default ISO format
-print(today)  # 2026-02-05
-print(today.strftime("%Y"))
-print(today.strftime("%b_%Y"))  # 05-Feb-2026
-print(today.strftime("%d_%b_%Y"))  # 05-Feb-2026
+url = """
+
+https://www.youtube.com/watch?v=BPcBX5bWBxM&list=PLDnIeUIsbmQsN2Nt59WGRGyirDO3zWccZ
+
+"""
+print(url.strip() == "https://www.youtube.com/watch?v=BPcBX5bWBxM&list=PLDnIeUIsbmQsN2Nt59WGRGyirDO3zWccZ")
+# parsed_url = urlparse(url)
+# query_params = parse_qs(parsed_url.query)
+
+# video_id = query_params.get("v", [None])[0]
+
+# print(video_id)
